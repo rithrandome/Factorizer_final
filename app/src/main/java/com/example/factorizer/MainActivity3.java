@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.VibrationEffect;
@@ -34,6 +35,7 @@ public class MainActivity3 extends AppCompatActivity {
     RadioButton opt1, opt2, opt3, selected_opt;
     Button start_timer;
     ConstraintLayout currentLayout;
+    MediaPlayer c,w;
 
 
     int selected_id, inputNumber;
@@ -170,9 +172,16 @@ public class MainActivity3 extends AppCompatActivity {
                             String str = selected_opt.getText().toString();
                             if (F.contains(Integer.parseInt(str))) {
 
+                                correct_sound();
+                                Toast.makeText(MainActivity3.this,
+                                        "Correct Answer !!", Toast.LENGTH_SHORT).show();
                                 correct_ans(obj);
 
                             } else {
+
+                                wrong_sound();
+                                Toast.makeText(MainActivity3.this,
+                                        "Wrong Answer !!", Toast.LENGTH_SHORT).show();
                                 wrong_answer(selected_id);
                                 final Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                                 assert v != null;
@@ -253,8 +262,6 @@ public class MainActivity3 extends AppCompatActivity {
     {
         currentLayout.setBackgroundResource(R.drawable.greenbackground);
         selected_opt.setBackgroundColor(Color.parseColor("#FF4CAF50"));
-        Toast.makeText(MainActivity3.this,
-                "Correct Answer !!", Toast.LENGTH_SHORT).show();
 
         start_timer.setText("NEXT");
         start_timer.setOnClickListener(new View.OnClickListener() {
@@ -298,15 +305,11 @@ public class MainActivity3 extends AppCompatActivity {
         selected_id = savedInstanceState.getInt("button_status");
         flag = savedInstanceState.getInt("flag_start");
 
-//        if(selected_id!=-1)
-//            wrong_answer(selected_id);
-
         updateCountDownText();
 
         if (timerRunning) {
             endTime = savedInstanceState.getLong("endTime");
             timeLeftInMillis = endTime - System.currentTimeMillis();
-            //startTimer();
         }
 
         if (flag==1) {
@@ -339,8 +342,15 @@ public class MainActivity3 extends AppCompatActivity {
                         String str = selected_opt.getText().toString();
                         if (F.contains(Integer.parseInt(str))) {
 
+                            correct_sound();
+                            Toast.makeText(MainActivity3.this,
+                                    "Correct Answer !!", Toast.LENGTH_SHORT).show();
                             correct_ans(obj);
                         } else {
+
+                            wrong_sound();
+                            Toast.makeText(MainActivity3.this,
+                                    "Wrong Answer !!", Toast.LENGTH_SHORT).show();
                             wrong_answer(selected_id);
                             final Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                             assert v != null;
@@ -355,7 +365,6 @@ public class MainActivity3 extends AppCompatActivity {
 
         else if(flag==2)
         {
-            //flag = 2;
             opt1.setText(String.valueOf(new_list.get(0)));
             opt2.setText(String.valueOf(new_list.get(1)));
             opt3.setText(String.valueOf(new_list.get(2)));
@@ -380,9 +389,6 @@ public class MainActivity3 extends AppCompatActivity {
                 } else {
 
                     wrong_answer(selected_id);
-                    final Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                    assert v != null;
-                    v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
 
                 }
 
@@ -428,6 +434,48 @@ public class MainActivity3 extends AppCompatActivity {
 
 
     }
+
+    public void correct_sound()
+    {
+        c = MediaPlayer.create(this,R.raw.correct_answer);
+
+        c.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                c.start();
+            }
+        });
+
+        c.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                c.release();
+            }
+        });
+
+    }
+
+    public void wrong_sound()
+    {
+        w = MediaPlayer.create(this,R.raw.wrong_answer);
+
+        w.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                w.start();
+            }
+        });
+
+        w.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                w.release();
+            }
+        });
+
+    }
+
+
 
 
 }
